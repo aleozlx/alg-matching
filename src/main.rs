@@ -7,10 +7,30 @@ trait Graph<V, E> {
     fn count_vertices(&self) -> usize;
 }
 
+trait FlowEdge<F> {
+    fn capacity(&self) -> F;
+    fn flow(&self) -> F;
+}
+
+trait Flow<V, E, F>
+  where E: FlowEdge<F>
+{
+    fn inner_graph<'g>(&'g self) -> &'g Graph<V, E>;
+    fn edmonds_karp_maxflow<'g>(&'g self, s: &'g V, t: &'g V) -> Self;
+}
+
 struct AdjGraph<V, E>
   where V: std::hash::Hash + std::cmp::Eq
 {
     adj: HashMap<V, HashMap<V, E>>
+}
+
+impl<V, E> AdjGraph<V, E>
+  where V: std::hash::Hash + std::cmp::Eq
+{
+    fn new() -> AdjGraph<V, E> {
+        AdjGraph { adj: HashMap::new() }
+    }
 }
 
 impl<V, E> Graph<V, E> for AdjGraph<V, E>
@@ -58,9 +78,30 @@ macro_rules! unweighted_graph(
     };
 );
 
+struct FlowEdgeI32 {
+    cap: i32,
+    flow: i32
+}
+
+impl FlowEdge<i32> for FlowEdgeI32 {
+    fn capacity(&self) -> i32 {
+        return self.cap;
+    }
+
+    fn flow(&self) -> i32 {
+        return self.flow;
+    }
+}
+
+struct AdjFlowI32<V, E>
+  where V: std::hash::Hash + std::cmp::Eq, E: FlowEdge<i32>
+{
+    g: AdjGraph<V, E>
+}
+
 #[test]
 fn test_empty_graph() {
-    let g: AdjGraph<i32, ()> = AdjGraph { adj: HashMap::new() };
+    let g: AdjGraph<i32, ()> = AdjGraph::new();
     assert_eq!(g.bfs_shortest_path(&0, &0), None);
 }
 
@@ -116,19 +157,9 @@ fn test_optimal_path() {
         4 => [1]
     };
     assert_eq!(g.bfs_shortest_path(&0, &1), Some(vec![0, 2, 1].iter().collect()));
+    // path.iter().map(|v| v.to_string()).collect::<Vec<String>>().join("->")
 }
 
 fn main() {
-    let g = unweighted_graph! {
-        0 => [3, 2],
-        2 => [1],
-        3 => [4],
-        4 => [1]
-    };
-    if let Some(path) = g.bfs_shortest_path(&0, &1){
-        println!("{}", path.iter().map(|v| v.to_string()).collect::<Vec<String>>().join("->"));
-    }
-    else {
-        println!("No path.");
-    }
+    let f: AdjFlowI32<i32, FlowEdgeI32> = AdjFlowI32{ g: AdjGraph::new() };
 }
