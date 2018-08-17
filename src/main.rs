@@ -50,7 +50,7 @@ macro_rules! unweighted_graph(
         {
             let mut g = AdjGraph { adj: HashMap::new() };
             $(
-                g.adj.insert($u, [$($v),+].iter().cloned().map(|v| (v, 1)).collect());
+                g.adj.insert($u, [$($v),+].iter().cloned().map(|v| (v, ())).collect());
             )+
             g
         }
