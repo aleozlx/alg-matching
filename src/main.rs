@@ -54,7 +54,7 @@ macro_rules! unweighted_graph(
             )+
             g
         }
-     };
+    };
 );
 
 fn main() {
