@@ -67,13 +67,37 @@ fn test_no_path() {
 }
 
 #[test]
+fn test_trivial_path1() {
+    let g = unweighted_graph! {
+        0 => [0]
+    };
+    assert_eq!(g.bfs_shortest_path(&0, &0), Some(vec![&0]));
+}
+
+#[test]
+fn test_trivial_path2() {
+    let g = unweighted_graph! {
+        0 => [1]
+    };
+    assert_eq!(g.bfs_shortest_path(&0, &0), Some(vec![&0]));
+}
+
+#[test]
+fn test_trivial_path3() {
+    let g = unweighted_graph! {
+        0 => [1]
+    };
+    assert_eq!(g.bfs_shortest_path(&0, &1), Some(vec![0, 1].iter().collect()));
+}
+
+#[test]
 fn test_bfs_path() {
     let g = unweighted_graph! {
         0 => [3, 2],
         3 => [4],
         4 => [1]
     };
-    assert_eq!(g.bfs_shortest_path(&0, &1), Some(vec![&0, &3, &4, &1]));
+    assert_eq!(g.bfs_shortest_path(&0, &1), Some(vec![0, 3, 4, 1].iter().collect()));
 }
 
 #[test]
@@ -84,7 +108,7 @@ fn test_optimal_path() {
         3 => [4],
         4 => [1]
     };
-    assert_eq!(g.bfs_shortest_path(&0, &1), Some(vec![&0, &2, &1]));
+    assert_eq!(g.bfs_shortest_path(&0, &1), Some(vec![0, 2, 1].iter().collect()));
 }
 
 fn main() {
