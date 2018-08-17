@@ -98,7 +98,7 @@ fn test_trivial_path3() {
 }
 
 #[test]
-fn test_bfs_path() {
+fn test_unique_path() {
     let g = unweighted_graph! {
         0 => [3, 2],
         3 => [4],
