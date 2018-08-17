@@ -57,6 +57,36 @@ macro_rules! unweighted_graph(
     };
 );
 
+#[test]
+fn test_no_path() {
+    let g = unweighted_graph! {
+        0 => [3, 2],
+        4 => [1]
+    };
+    assert_eq!(g.bfs_shortest_path(&0, &1), None);
+}
+
+#[test]
+fn test_bfs_path() {
+    let g = unweighted_graph! {
+        0 => [3, 2],
+        3 => [4],
+        4 => [1]
+    };
+    assert_eq!(g.bfs_shortest_path(&0, &1), Some(vec![&0, &3, &4, &1]));
+}
+
+#[test]
+fn test_optimal_path() {
+    let g = unweighted_graph! {
+        0 => [3, 2],
+        2 => [1],
+        3 => [4],
+        4 => [1]
+    };
+    assert_eq!(g.bfs_shortest_path(&0, &1), Some(vec![&0, &2, &1]));
+}
+
 fn main() {
     let g = unweighted_graph! {
         0 => [3, 2],
@@ -65,8 +95,9 @@ fn main() {
         4 => [1]
     };
     if let Some(path) = g.bfs_shortest_path(&0, &1){
-        for v in path {
-            println!("{}", v);
-        }
+        println!("{}", path.iter().map(|v| v.to_string()).collect::<Vec<String>>().join("->"));
+    }
+    else {
+        println!("No path.");
     }
 }
