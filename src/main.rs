@@ -99,6 +99,20 @@ struct AdjFlowI32<V, E>
     g: AdjGraph<V, E>
 }
 
+impl<V, E> Flow<V, E, i32> for AdjFlowI32<V, E>
+  where V: std::hash::Hash + std::cmp::Eq, E: FlowEdge<i32>
+{
+    fn inner_graph<'g>(&'g self) -> &'g Graph<V, E> {
+        return &self.g;
+    }
+
+    fn edmonds_karp_maxflow<'g>(&'g self, s: &'g V, t: &'g V) -> Self {
+        // find augmenting path using BFS
+        // augment flow
+        unimplemented!();
+    }
+}
+
 #[test]
 fn test_empty_graph() {
     let g: AdjGraph<i32, ()> = AdjGraph::new();
