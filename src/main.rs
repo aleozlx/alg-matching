@@ -16,6 +16,7 @@ trait Flow<V, E, F>
   where E: FlowEdge<F>
 {
     fn inner_graph<'g>(&'g self) -> &'g Graph<V, E>;
+    fn residual_graph<'g>(&'g self) -> Box<Graph<V, E> + 'g>;
     fn edmonds_karp_maxflow<'g>(&'g self, s: &'g V, t: &'g V) -> Self;
 }
 
@@ -106,7 +107,14 @@ impl<V, E> Flow<V, E, i32> for AdjFlowI32<V, E>
         return &self.g;
     }
 
+    fn residual_graph<'g>(&'g self) -> Box<Graph<V, E> + 'g> {
+        // https://stackoverflow.com/questions/29740488/parameter-type-may-not-live-long-enough
+        Box::new(AdjGraph::new())
+    }
+
     fn edmonds_karp_maxflow<'g>(&'g self, s: &'g V, t: &'g V) -> Self {
+        let res = self.residual_graph();
+        
         // find augmenting path using BFS
         // augment flow
         unimplemented!();
